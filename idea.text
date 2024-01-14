@@ -1,0 +1,75 @@
+Survey Services
++ Score Services
+    - Khi 1 user tham gia khảo sát sẽ + 1 point (OK)
+        + nếu đủ 10 poitn thì sẽ tăng 1 level (Ok)
+    - Nếu user là người tạo survey cũng sẽ mặc định cộng 1 point (OK)
+    - Khi hết thời gian khảo sát (dự kiến là 1 tuần) thì user nào không tham gia sẽ tự - 1 point (1 survey là 1 point)  (OK)  
+ + Level Services
+    - Level khởi đầu là 0
+    - Cứ đủ 10 point tăng 1 level (dự kiến tối đa 3 level) (Ok)
+    - Nếu point trờ về 0 (từ khi lên level 1) sẽ - 1 level
++ Survey Services
+    (/api/survey)
+    @Post
+    + Create survey 
+        surveyDTO có dạng 
+           {
+                "title" : "test3",
+                "urlGGForm" : "gg.com",
+                "userId" : 3
+            }
+    @Get
+    + getAllSurvey
+            [
+                {
+                    "id": 1,
+                    "title": "test",
+                    "urlGGForm": "\"not found\"",
+                    "userId": 1,
+                    "createdAt": null
+                },
+                {
+                    "id": 3,
+                    "title": "test update",
+                    "urlGGForm": "ggtest.com",
+                    "userId": 2,
+                    "createdAt": "2023-12-10T00:00:00"
+                },
+                {
+                    "id": 5,
+                    "title": "test3",
+                    "urlGGForm": "gg.com",
+                    "userId": 3,
+                    "createdAt": "2023-12-10T00:00:00"
+                }
+            ]
+     @Get({/id})
+    + getSurveyWithId
+                {
+                    "id": 3,
+                    "title": "test update",
+                    "urlGGForm": "ggtest.com",
+                    "userId": 2,
+                    "createdAt": "2023-12-10T00:00:00"
+                }
+
+\\Idea
+Mặc định khi level là 0 thì sẽ không lấy khảo sát của user đó  (tối đa level sẽ là 3)
+    + api sẽ trả về 
+        {
+            mess : "Bạn cần tích cực tham gia khảo sát để kiếm thêm điểm tích lũy."
+        }
+    + level từ 2 - 3 api sẽ trả về list survey user đó chưa tham gia khảo sát
+        {
+            survey1 ,
+            survey ...
+        }
+case1 :
+Vì mình chỉ bắt được lúc user nhấn vô link nên fe sẽ tự động xóa survey đó khi user nhấn vào link và tự động + 1
+- Khi survey hết thời gian tồn tại sẽ không cho tham gia nữa (thời gian tồn tại dự kiến 1 tuần)
+case 2 :
+- Mặc định user sẽ level 0 và khi đăng nhập thành công sẽ không hiện 
+    survey mà chỉ hiện list survey bên cái list dưới chỗ icon ở Fe để cho họ vẫn có thể vào tham gia tích lũy poitn
+- Khi nào user đạt level 2 -3 mới hiện popup mặc định phải khảo sát mới được tham gia các sự kiện khác 
+case 4 :
+- Nếu khi hết thời gian tồn tại survey mà user nào không tham gia sẽ bị - 1 tránh trường hợp ngâm điểm
